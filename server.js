@@ -7,7 +7,7 @@ app.use(bodyParser.urlencoded({extended : true}))
 
 app.use(bodyParser.json())
 
-require('./router/user')(app);
+require('./router/router')(app);
 app.get('/',(req,res) =>{
     res.json({'message': 'Welcome to the site'});
 });
