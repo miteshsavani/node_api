@@ -1,14 +1,37 @@
-exports.GetUserData = (req,res) =>{
-    res.json([
-            {'name':'mitesh', 'surname':'savani'},
-            {'name':'Sanket', 'surname':'patel'} ] );
+var User = require('./../model/usermodel');
+
+exports.GetUserData = (req,res) =>{	
+	if(!req.query.callback){
+		req.query.callback = 'POSTMan';
+	}
+
+	User.find().select({username: 1, firstname: 1, lastname: 1, _id:0}).exec(getData);
+
+	function getData(error, users) {
+		if(error)
+		 res.send(error);
+		else
+		res.send(req.query.callback + '('+ users + ');');
+	}
 }
 
 exports.AddUserData = (req,res) =>{
-    if(!req.params.id) {
-        return res.status(400).send({
-            message: "Please pass id of user "
+	//res.send(JSON.stringify({ a: 1 }));
+	//res.send('Tledfsafsf({mitesh'+req.body.command+'});');
+	console.log('body: ' + JSON.stringify(req.body));
+	var json = JSON.parse(JSON.stringify(req.body));
+	 //res.json('User Createdmiteshadfdf' + JSON.stringify(req.body));	
+	
+	User.create({
+            username: req.body.username,
+			firstname: req.body.firstname,
+			lastname: req.body.lastname,
+            done: false
+        }, function (err, todo) {
+            if (err)
+                res.send(err);
+			res.json('User Created ');		
         });
-    }
-    res.json('Post User Data' + req.params.id );
+		
 }
+

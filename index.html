@@ -1,0 +1,36 @@
+<html>
+<head>
+<title> Test Node api </title>
+<script src="Jquery.min_3.2.js"> </script>
+</head>
+
+<body>
+
+<script type='text/javascript'>
+$(function(){
+alert('jquery loaded');
+
+		var data ={};
+		data.username='test2';
+		data.firstname='first2';
+		data.lastname='last2;'
+
+
+$.ajax({
+type: 'POST',
+data: JSON.stringify(data),
+contentType: 'application/json',
+url: 'http://localhost:3030/user',						
+                        success: function(data) {
+                            console.log('success');
+                            console.log(JSON.stringify(data));
+                        },
+						error: function(){
+							alert('failed');
+						}
+                    });
+
+});
+</script>
+</body>
+</html>
