@@ -1,6 +1,9 @@
 <html>
 <head>
 <title> Test Node api </title>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script src="Jquery.min_3.2.js"> </script>
 </head>
 
@@ -8,13 +11,18 @@
 
 <script type='text/javascript'>
 $(function(){
-alert('jquery loaded');
 
-		var data ={};
-		data.username='test2';
-		data.firstname='first2';
-		data.lastname='last2;'
+GetAllUserData();
 
+$('#tb').on('click', 'button.delete', function(){ 
+	userDelete($(this).attr('value'));
+});
+
+$("#add").click(function(){
+var data ={};
+		if(!$('#username').val()) { alert(' username not found'); return;} else data.username =$('#username').val();
+		if(!$('#firstname').val()) { alert(' firstname not found'); return;} else data.firstname =$('#firstname').val();
+		if($('#lastname').val()) data.lastname =$('#lastname').val();
 
 $.ajax({
 type: 'POST',
@@ -23,14 +31,112 @@ contentType: 'application/json',
 url: 'http://localhost:3030/user',						
                         success: function(data) {
                             console.log('success');
-                            console.log(JSON.stringify(data));
+							
+                            alert(JSON.stringify(data));
+							resetAll();
+							GetAllUserData();
                         },
 						error: function(){
 							alert('failed');
 						}
                     });
 
+
 });
+
+function userDelete(id) {
+var data ={};
+data._id = id;
+$.ajax({
+type: 'DELETE',
+data: JSON.stringify(data),
+contentType: 'application/json',
+url: 'http://localhost:3030/user',						
+                        success: function(data) {
+                           console.log('delete success');
+						   console.log(data);
+						resetAll();
+						GetAllUserData();
+							
+                        },
+						error: function(){
+							alert('failed');
+						}
+                    });
+}
+
+function GetAllUserData(){
+
+$.ajax({
+type: 'GET',
+contentType: 'application/json',
+url: 'http://localhost:3030/user',						
+                        success: function(data) {
+                           console.log('success');
+						   console.log(data);
+						   fillTable(data);
+                            //alert(JSON.stringify(data));
+							
+                        },
+						error: function(){
+							alert('failed');
+						}
+                    });
+
+}
+
+function resetAll(){
+$('#username').val('');
+$('#firstname').val('');
+$('#lastname').val('');
+}
+});
+
+function fillTable(data) {
+	
+	$("#tb").empty();
+	var html = `<thead>
+      <tr>
+        <th>Username</th>
+        <th>Firstname</th>
+        <th>Lastname</th>
+		<th>Action</th>
+      </tr>
+    </thead>
+	<tbody>`;
+	for(var i=0; i < data.length; i++) {
+	
+			html+= `<tr> 
+					<td> ${data[i].username}</td>
+					<td> ${data[i].firstname}</td>
+					<td> ${data[i].lastname}</td> 
+					<td> <button value='${data[i]._id}' class='delete'> Delete </button></td>
+					
+					</tr>`;
+	}
+	html +="</tbody>"
+	$('#tb').html(html);
+}
+
 </script>
+
+<div class='container'>
+	<div class="form-group">
+    <label for="username">Username</label>
+    <input class="form-control" id="username" type="text">
+  </div>
+   <div class="form-group">
+    <label for="firstname">Firstname</label>
+    <input class="form-control" id="firstname" type="text">
+  </div>
+  <div class="form-group">
+    <label for="lastname">Lastname</label>
+    <input class="form-control" id="lastname" type="text">
+  </div>
+  <button type="button" id='add' class="btn btn-primary btn-lg">Add User</button>
+</div>
+
+<table id='tb' border='2' class="table" style='width:850px; margin:auto; margin-top:30px;'>
+</table>
 </body>
 </html>

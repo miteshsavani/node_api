@@ -5,13 +5,14 @@ exports.GetUserData = (req,res) =>{
 		req.query.callback = 'POSTMan';
 	}
 
-	User.find().select({username: 1, firstname: 1, lastname: 1, _id:0}).exec(getData);
+	User.find().select({username: 1, firstname: 1, lastname: 1, _id:1}).exec(getData);
 
 	function getData(error, users) {
 		if(error)
 		 res.send(error);
 		else
-		res.send(req.query.callback + '('+ users + ');');
+		//res.send(req.query.callback + '('+ users + ');');
+		res.json(users);
 	}
 }
 
@@ -33,5 +34,17 @@ exports.AddUserData = (req,res) =>{
 			res.json('User Created ');		
         });
 		
+}
+
+exports.DeleteUserData = (req, res) => {
+
+User.find({_id: req.body._id}).remove(callback);
+
+function callback(error, result)
+{
+		if(error) res.send(error);
+		
+		res.json('User Deleted');
+}
 }
 
