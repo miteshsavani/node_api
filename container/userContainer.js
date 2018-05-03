@@ -40,11 +40,30 @@ exports.DeleteUserData = (req, res) => {
 
 User.find({_id: req.body._id}).remove(callback);
 
-function callback(error, result)
-{
-		if(error) res.send(error);
-		
-		res.json('User Deleted');
+	function callback(error, result)
+	{
+			if(error) res.send(error);
+			
+			res.json('User Deleted');
+	}
 }
+
+exports.UpdateUserData = (req, res) => {
+
+User.update(
+		{_id: req.body._id}, 
+		{ $set: {
+			username: req.body.username,
+			firstname: req.body.firstname,
+			lastname: req.body.lastname
+				}
+		}, callback);
+		
+	function callback(error, result)
+	{
+			if(error) res.send(error);
+			
+			res.json('User Updated');
+	}
 }
 

@@ -14,11 +14,28 @@ $(function(){
 
 GetAllUserData();
 
+
 $('#tb').on('click', 'button.delete', function(){ 
 	userDelete($(this).attr('value'));
 });
 
+$('#tb').on('click', 'button.update', function(){ 
+	$('#add').text('Update User');
+	$('#userId').text($(this).attr('value'));
+	$('#username').val($(this).closest('tr').find('.username').text());
+	$('#firstname').val($(this).closest('tr').find('.firstname').text());
+	$('#lastname').val($(this).closest('tr').find('.lastname').text());
+	
+});
+
 $("#add").click(function(){
+
+if($(this).text() === 'Update User')
+UpdateUser();
+else
+//alert($(this).text());
+//$(this).text('mtiesh');
+//return;
 var data ={};
 		if(!$('#username').val()) { alert(' username not found'); return;} else data.username =$('#username').val();
 		if(!$('#firstname').val()) { alert(' firstname not found'); return;} else data.firstname =$('#firstname').val();
@@ -31,8 +48,7 @@ contentType: 'application/json',
 url: 'http://localhost:3030/user',						
                         success: function(data) {
                             console.log('success');
-							
-                            alert(JSON.stringify(data));
+                            
 							resetAll();
 							GetAllUserData();
                         },
@@ -54,6 +70,32 @@ contentType: 'application/json',
 url: 'http://localhost:3030/user',						
                         success: function(data) {
                            console.log('delete success');
+						   console.log(data);
+						resetAll();
+						GetAllUserData();
+							
+                        },
+						error: function(){
+							alert('failed');
+						}
+                    });
+}
+
+function UpdateUser() {
+
+var data ={};
+		if(!$('#username').val()) { alert(' username not found'); return;} else data.username =$('#username').val();
+		if(!$('#firstname').val()) { alert(' firstname not found'); return;} else data.firstname =$('#firstname').val();
+		if($('#lastname').val()) data.lastname =$('#lastname').val();
+data._id = $('#userId').text();
+
+$.ajax({
+type: 'PUT',
+data: JSON.stringify(data),
+contentType: 'application/json',
+url: 'http://localhost:3030/user',						
+                        success: function(data) {
+                           console.log('Update success');
 						   console.log(data);
 						resetAll();
 						GetAllUserData();
@@ -89,6 +131,8 @@ function resetAll(){
 $('#username').val('');
 $('#firstname').val('');
 $('#lastname').val('');
+$('#add').text('Add User');
+$('#userId').text('');
 }
 });
 
@@ -107,10 +151,13 @@ function fillTable(data) {
 	for(var i=0; i < data.length; i++) {
 	
 			html+= `<tr> 
-					<td> ${data[i].username}</td>
-					<td> ${data[i].firstname}</td>
-					<td> ${data[i].lastname}</td> 
-					<td> <button value='${data[i]._id}' class='delete'> Delete </button></td>
+					<td class='username'> ${data[i].username}</td>
+					<td class='firstname'> ${data[i].firstname}</td>
+					<td class='lastname'> ${data[i].lastname}</td> 
+					<td> 
+						<button value='${data[i]._id}' class='delete'> Delete </button> 
+						<button value='${data[i]._id}' class='update'> Update </button> 
+					</td>
 					
 					</tr>`;
 	}
@@ -134,6 +181,7 @@ function fillTable(data) {
     <input class="form-control" id="lastname" type="text">
   </div>
   <button type="button" id='add' class="btn btn-primary btn-lg">Add User</button>
+  <span style='display:none' id='userId'></span>
 </div>
 
 <table id='tb' border='2' class="table" style='width:850px; margin:auto; margin-top:30px;'>
