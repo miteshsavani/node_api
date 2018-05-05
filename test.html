@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <script type="text/javascript">
+     function initGeolocation()
+     {
+        if( navigator.geolocation )
+        {
+           // Call getCurrentPosition with success and failure callbacks
+           navigator.geolocation.getCurrentPosition( success, fail );
+        }
+        else
+        {
+           alert("Sorry, your browser does not support geolocation services.");
+        }
+		
+		
+		if ("geolocation" in navigator){ //check geolocation available 
+			//try to get user current location using getCurrentPosition() method
+			navigator.geolocation.getCurrentPosition(function(position){ 
+					console.log("Found your location \nLat : "+position.coords.latitude+" \nLang :"+ position.coords.longitude);
+				});
+		}else{
+			console.log("Browser doesn't support geolocation!");
+		}
+     }
+
+     function success(position)
+     {
+
+         document.getElementById('long').value = position.coords.longitude;
+         document.getElementById('lat').value = position.coords.latitude
+     }
+
+     function fail()
+     {
+        // Could not obtain location
+     }
+
+   </script>    
+ </head>
+
+ <body onLoad="initGeolocation();">
+   <FORM NAME="rd" METHOD="POST" ACTION="index.html">
+     <INPUT TYPE="text" NAME="long" ID="long" VALUE="">
+     <INPUT TYPE="text" NAME="lat" ID="lat" VALUE="">
+ </body>

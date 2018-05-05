@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 var mongoose = require('mongoose'); 				// mongoose for mongodb
 var methodOverride = require('method-override');
+var MongoClient = require('mongodb').MongoClient;
+mongoose.Promise = require('bluebird');
+var database = require('./config/database'); 
 
 const app = express();
 const option = {
@@ -12,7 +15,11 @@ const option = {
 
 
 
-mongoose.connect('mongodb://localhost:27017/Mitesh',option);
+//mongoose.connect('mongodb://127.0.0.1:27017/Mitesh');//,option);
+//mongoose.connect('mongodb+srv://root:Mitesh107@cluster0-3kmje.mongodb.net/Mitesh');
+ //mongoose.connect('mongodb://root:Mitesh107@cluster0-shard-00-00-3kmje.mongodb.net:27017,cluster0-shard-00-01-3kmje.mongodb.net:27017,cluster0-shard-00-02-3kmje.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin');
+mongoose.connect(database.remote);
+
  
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-Method-Override header in the request
@@ -35,9 +42,16 @@ app.all("/*", function (req, res, next) {
 
 require('./router/router')(app);
 app.get('/',(req,res) =>{
-    res.json({'message': 'Welcome to the site'});
+/*var uri = 'mongodb+srv://root:Mitesh107@cluster0-3kmje.mongodb.net/Mitesh';
+MongoClient.connect(uri, function(err, client) {
+   const collection = client.db("Mitesh").collection("test");
+   // perform actions on the collection object
+   res.json({'connect': 'successful'});
+   client.close();
+});*/
+   // res.json({'message': 'Welcome to the site'});
 });
 
 app.listen(3030,()=>{
 console.log('server is listening on port 3030');
-})
+});
