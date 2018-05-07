@@ -31,13 +31,17 @@ exports.GetUserUUID = (req,res) =>{
 
     function getData(error, username) 
     {
-
+        console.log('--- ' + username, error);
         res.setHeader('Content-Type', 'application/json');
 		if(error)
 		 res.send(error);
 		else
-        //res.send(req.query.callback + '('+ users + ');');
-        if(username === null) res.json({});
-		res.json(username);
-	}
+        {
+            if(username === null) 
+                res.json({'error':'username not found'});
+            else
+                res.json(username);
+    
+        }    //res.send(req.query.callback + '('+ users + ');');
+        	}
 }
