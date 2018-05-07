@@ -24,7 +24,7 @@ exports.AddUserData = (req,res) =>{
 	 //res.json('User Createdmiteshadfdf' + JSON.stringify(req.body));	
 	
 	User.create({
-            username: req.body.username,
+			username: req.body.username,
 			firstname: req.body.firstname,
 			lastname: req.body.lastname,
             done: false

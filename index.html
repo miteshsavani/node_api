@@ -4,12 +4,14 @@
 <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="Jquery.min_3.2.js"> </script>
 </head>
 
 <body>
 
 <script type='text/javascript'>
+var urikey ='uri';
 $(function(){
 
 GetAllUserData();
@@ -30,6 +32,8 @@ $('#tb').on('click', 'button.update', function(){
 
 $("#add").click(function(){
 
+var NodeURI = getnodeAPIuri();
+
 if($(this).text() === 'Update User')
 UpdateUser();
 else
@@ -45,7 +49,7 @@ $.ajax({
 type: 'POST',
 data: JSON.stringify(data),
 contentType: 'application/json',
-url: 'http://localhost:3030/user',						
+url: `${NodeURI}/user`,						
                         success: function(data) {
                             console.log('success');
                             
@@ -61,13 +65,14 @@ url: 'http://localhost:3030/user',
 });
 
 function userDelete(id) {
+var NodeURI = getnodeAPIuri();
 var data ={};
 data._id = id;
 $.ajax({
 type: 'DELETE',
 data: JSON.stringify(data),
 contentType: 'application/json',
-url: 'http://localhost:3030/user',						
+url: `${NodeURI}/user`,						
                         success: function(data) {
                            console.log('delete success');
 						   console.log(data);
@@ -82,6 +87,7 @@ url: 'http://localhost:3030/user',
 }
 
 function UpdateUser() {
+var NodeURI = getnodeAPIuri();
 
 var data ={};
 		if(!$('#username').val()) { alert(' username not found'); return;} else data.username =$('#username').val();
@@ -93,7 +99,7 @@ $.ajax({
 type: 'PUT',
 data: JSON.stringify(data),
 contentType: 'application/json',
-url: 'http://localhost:3030/user',						
+url: `${NodeURI}/user`,						
                         success: function(data) {
                            console.log('Update success');
 						   console.log(data);
@@ -108,11 +114,12 @@ url: 'http://localhost:3030/user',
 }
 
 function GetAllUserData(){
+var NodeURI = getnodeAPIuri();
 
 $.ajax({
 type: 'GET',
 contentType: 'application/json',
-url: 'http://e0d50874.ngrok.io/user',						
+url: `${NodeURI}/user`,						
                         success: function(data) {
                            console.log('success');
 						   console.log(data);
@@ -121,10 +128,24 @@ url: 'http://e0d50874.ngrok.io/user',
 							
                         },
 						error: function(){
+						localStorage.removeItem(urikey);
 							alert('failed');
+							
 						}
                     });
 
+}
+
+function getnodeAPIuri(){
+
+if(localStorage.getItem(urikey)) {
+	return localStorage.getItem(urikey);
+}
+else {
+var uri = prompt('give Node APi uri');
+localStorage.setItem(urikey, uri);
+return uri;
+}
 }
 
 function resetAll(){
@@ -168,6 +189,7 @@ function fillTable(data) {
 </script>
 
 <div class='container'>
+	
 	<div class="form-group">
     <label for="username">Username</label>
     <input class="form-control" id="username" type="text">
@@ -181,6 +203,7 @@ function fillTable(data) {
     <input class="form-control" id="lastname" type="text">
   </div>
   <button type="button" id='add' class="btn btn-primary btn-lg">Add User</button>
+  <!--<i class="fa fa-circle-o-notch fa-spin" style="font-size:36px; margin:auto;"></i>-->
   <span style='display:none' id='userId'></span>
 </div>
 
