@@ -49,8 +49,27 @@ MongoClient.connect(uri, function(err, client) {
    res.json({'connect': 'successful'});
    client.close();
 });*/
-   // res.json({'message': 'Welcome to the site'});
+  res.json({'message': 'Welcome to the site'});
 });
+
+app.get('/mitesh', (req, res) => { 
+fs.readFile("index.html", function (error, pgResp) {
+            if (error) {
+                res.writeHead(404);
+                res.write('Contents you are looking are Not Found');
+            } else {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write(pgResp);
+            }
+             
+            res.end();
+        });
+
+})
+
+app.get('/Jquery.min_3.2.js', function(req, res){
+res.sendFile(__dirname + '/Jquery.min_3.2.js'); 
+})
 
 app.listen(3030,()=>{
 console.log('server is listening on port 3030');
